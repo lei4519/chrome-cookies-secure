@@ -4,7 +4,7 @@
  * See the accompanying LICENSE file for terms.
  */
 
-var sqlite3 = require('sqlite3'),
+var sqlite3 = require('@vscode/sqlite3'),
 	tld = require('tldjs'),
 	tough = require('tough-cookie'),
 	request = require('request'),
@@ -192,7 +192,7 @@ function convertRawToSetCookieStrings(cookies) {
 function convertRawToPuppeteerState(cookies) {
 
 	let puppeteerCookies = [];
-	
+
 	cookies.forEach(function(cookie, index) {
 		const newCookieObject = {
 			name: cookie.name,
@@ -254,20 +254,20 @@ const getCookies = async (uri, format, callback, profile) => {
 
 		path = process.env.HOME + `/Library/Application Support/Google/Chrome/${profile}/Cookies`;
 		ITERATIONS = 1003;
-	
+
 	} else if (process.platform === 'linux') {
-	
+
 		path = process.env.HOME + `/.config/google-chrome/${profile}/Cookies`;
 		ITERATIONS = 1;
-	
+
 	} else if (process.platform === 'win32') {
 
 		path = os.homedir() + `\\AppData\\Local\\Google\\Chrome\\User Data\\${profile}\\Cookies`;
 
 	} else {
-	
+
 		return callback(new Error('Only Mac, Windows, and Linux are supported.'));
-	
+
 	}
 
 	db = new sqlite3.Database(path);
@@ -307,7 +307,7 @@ const getCookies = async (uri, format, callback, profile) => {
 			// ORDER BY tries to match sort order specified in
 			// RFC 6265 - Section 5.4, step 2
 			// http://tools.ietf.org/html/rfc6265#section-5.4
-			
+
 			db.each("SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%" + domain + "' ORDER BY LENGTH(path) DESC, creation_utc ASC", function (err, cookie) {
 
 				var encryptedValue,
